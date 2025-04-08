@@ -1,7 +1,7 @@
 // script.js
 
 /**
- * Get the current time adjusted to Arabian Standard Time (AST, UTC+3)
+ * Returns the current date and time adjusted to Arabian Standard Time (AST, UTC+3)
  */
 function getCurrentAST() {
   const now = new Date();
@@ -9,107 +9,69 @@ function getCurrentAST() {
   return new Date(utc + 3 * 3600000);
 }
 
-/**
- * Define market trading session times (only the 'Market Open trading session' is used for status)
- * Times are in 24-hour format.
- */
-const markets = {
-  equity: {
-    name: "Equity Markets",
-    openStart: { hour: 10, minute: 0 },  // Market Open trading session starts at 10:00 AM
-    openEnd: { hour: 15, minute: 0 }     // Market Open trading session ends at 3:00 PM
-  },
-  etfs: {
-    name: "ETFs Market",
-    openStart: { hour: 10, minute: 0 },
-    openEnd: { hour: 15, minute: 0 }
-  },
-  sukuk: {
-    name: "Sukuk and Bonds Market",
-    openStart: { hour: 10, minute: 0 },
-    openEnd: { hour: 15, minute: 0 }
-  },
-  derivatives: {
-    name: "Derivatives Market",
-    openStart: { hour: 9, minute: 30 },  // Trading session from 9:30 AM
-    openEnd: { hour: 15, minute: 30 }    // Ends at 3:30 PM
-  }
-};
+// Define trading hours common to all markets (10:00 AM to 3:00 PM AST)
+const openHour = 10;
+const openMinute = 0;
+const closeHour = 15;
+const closeMinute = 0;
 
 /**
- * Update the status and countdown for a single market.
- * @param {string} marketKey - The key for the market (e.g., "equity").
+ * Updates the market status and sets the countdown timer.
+ * - During market open (10:00 AM ≤ now < 3:00 PM): Displays “Market Open” in green and counts down to closing.
+ * - Outside market hours: Displays “Market Closed” in red and counts down to the next day’s market opening.
  */
-function updateMarket(marketKey) {
-  const market = markets[marketKey];
+function updateMarketStatus() {
   const now = getCurrentAST();
-
-  // Build Date objects for today's open and close times in AST
-  let openStart = new Date(now);
-  openStart.setHours(market.openStart.hour, market.openStart.minute, 0, 0);
-
-  let openEnd = new Date(now);
-  openEnd.setHours(market.openEnd.hour, market.openEnd.minute, 0, 0);
-
-  let statusText = "";
-  let timerLabel = "";
-  let statusColor = "";
-  let timerColor = "";
+  const statusElement = document.getElementById("market-status");
+  const countdownElement = document.getElementById("countdown");
   let targetTime;
-
-  // Determine if the current time falls within the Market Open trading session
-  if (now >= openStart && now < openEnd) {
-    // When trading session is active, market is considered "open"
+  let statusText;
+  let timerLabel;
+  
+  // Create Date objects for today’s open and close times
+  const openTime = new Date(now);
+  openTime.setHours(openHour, openMinute, 0, 0);
+  
+  const closeTime = new Date(now);
+  closeTime.setHours(closeHour, closeMinute, 0, 0);
+  
+  // Check if the market is open
+  if (now >= openTime && now < closeTime) {
     statusText = "Market Open";
     timerLabel = "Market closing in: ";
-    statusColor = "green";
-    timerColor = "green";
-    targetTime = openEnd;
+    targetTime = closeTime;
+    statusElement.style.color = "green";
+    countdownElement.style.color = "green";
   } else {
-    // Outside the trading session, market is considered "closed"
     statusText = "Market Closed";
     timerLabel = "Market opening in: ";
-    statusColor = "red";
-    timerColor = "red";
+    statusElement.style.color = "red";
+    countdownElement.style.color = "red";
     
-    // If before today's open session, target is today's openStart; if after, then it's tomorrow's openStart.
-    if (now < openStart) {
-      targetTime = openStart;
+    // If it's before today’s opening time, count down to today’s open; if after, count down to tomorrow’s open.
+    if (now < openTime) {
+      targetTime = openTime;
     } else {
-      targetTime = new Date(openStart);
-      targetTime.setDate(openStart.getDate() + 1);
+      targetTime = new Date(openTime);
+      targetTime.setDate(openTime.getDate() + 1);
     }
   }
-
-  // Update the status element
-  const statusElement = document.getElementById(`status-${marketKey}`);
+  
   statusElement.innerText = statusText;
-  statusElement.style.color = statusColor;
-
-  // Calculate the countdown timer values
-  const countdownElement = document.getElementById(`timer-${marketKey}`);
+  
+  // Calculate the remaining time until the target time
   let distance = targetTime.getTime() - now.getTime();
   if (distance < 0) { distance = 0; }
+  
   const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((distance / (1000 * 60)) % 60);
   const seconds = Math.floor((distance / 1000) % 60);
-
-  // Update the timer element with the appropriate message and color
-  countdownElement.innerText = `${timerLabel}${hours}h ${minutes}m ${seconds}s`;
-  countdownElement.style.color = timerColor;
+  
+  countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
 }
 
-/**
- * Update the status and timer for all markets.
- */
-function updateAllMarkets() {
-  for (let key in markets) {
-    updateMarket(key);
-  }
-}
+// Update the market status and countdown immediately
+updateMarketStatus();
 
-// Initial update
-updateAllMarkets();
-
-// Update every second for a live countdown
-setInterval(updateAllMarkets, 1000);
+// Update the countdown every second
+setInterval(updateMarketStatus, 1000);
