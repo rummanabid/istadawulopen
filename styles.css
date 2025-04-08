@@ -1,6 +1,6 @@
 /* styles.css */
 
-/* Base styling */
+/* Basic page styling */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -15,26 +15,22 @@ header {
   padding: 20px;
 }
 
-/* Market section styling */
-.market-section {
+/* Styling for the market status section */
+#market-status-section {
   background-color: white;
   margin: 20px auto;
   padding: 20px;
-  max-width: 500px;
+  max-width: 600px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.market-section h2 {
-  margin-top: 0;
-}
-
-/* Default text sizes for status and timer */
-#status-equity, #status-etfs, #status-sukuk, #status-derivatives {
-  font-size: 1.5em;
+#market-status {
+  font-size: 2em;
   margin: 10px 0;
 }
 
-#timer-equity, #timer-etfs, #timer-sukuk, #timer-derivatives {
-  font-size: 1.2em;
+#countdown {
+  font-size: 1.5em;
+  margin: 10px 0;
 }
