@@ -46,7 +46,7 @@ function updateMarketStatus() {
     statusText = "Market Closed";
     timerLabel = "Market opening in: ";
     statusElement.style.color = "red";
-    countdownElement.style.color = "red";
+    countdownElement.style.color = "black";
     
     // If it's before today’s opening time, count down to today’s open; if after, count down to tomorrow’s open.
     if (now < openTime) {
