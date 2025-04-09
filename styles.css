@@ -1,36 +1,71 @@
-/* styles.css */
-
-/* Basic page styling */
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f5f5f5;
-  margin: 0;
-  padding: 0;
+function getCurrentAST() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 3 * 3600000); // UTC+3 for AST
 }
 
-header {
-  background-color: #004080;
-  color: white;
-  padding: 20px;
+const openHour = 10;
+const openMinute = 0;
+const closeHour = 15;
+const closeMinute = 0;
+
+function updateMarketStatus() {
+  const now = getCurrentAST();
+  const statusElement = document.getElementById("market-status");
+  const countdownElement = document.getElementById("countdown");
+  const statusElementAr = document.getElementById("market-status-ar");
+  const countdownElementAr = document.getElementById("countdown-ar");
+
+  let targetTime;
+  let statusText, statusTextAr;
+  let timerLabel, timerLabelAr;
+
+  const openTime = new Date(now);
+  openTime.setHours(openHour, openMinute, 0, 0);
+
+  const closeTime = new Date(now);
+  closeTime.setHours(closeHour, closeMinute, 0, 0);
+
+  if (now >= openTime && now < closeTime) {
+    statusText = "Market Open";
+    statusTextAr = "السوق مفتوح";
+    timerLabel = "Market closing in: ";
+    timerLabelAr = "يغلق السوق بعد: ";
+    targetTime = closeTime;
+
+    statusElement.style.color = "green";
+    countdownElement.style.color = "green";
+    statusElementAr.style.color = "green";
+    countdownElementAr.style.color = "green";
+  } else {
+    statusText = "Market Closed";
+    statusTextAr = "السوق مغلق";
+    timerLabel = "Market opening in: ";
+    timerLabelAr = "يفتح السوق بعد: ";
+    statusElement.style.color = "red";
+    statusElementAr.style.color = "red";
+    countdownElement.style.color = "black";
+    countdownElementAr.style.color = "black";
+
+    if (now < openTime) {
+      targetTime = openTime;
+    } else {
+      targetTime = new Date(openTime);
+      targetTime.setDate(openTime.getDate() + 1);
+    }
+  }
+
+  const distance = Math.max(0, targetTime - now);
+  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((distance / (1000 * 60)) % 60);
+  const seconds = Math.floor((distance / 1000) % 60);
+
+  statusElement.innerText = statusText;
+  countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
+
+  statusElementAr.innerText = statusTextAr;
+  countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
 }
 
-/* Styling for the market status section */
-#market-status-section {
-  background-color: white;
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 600px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#market-status {
-  font-size: 2em;
-  margin: 10px 0;
-}
-
-#countdown {
-  font-size: 1.5em;
-  margin: 10px 0;
-}
+updateMarketStatus();
+setInterval(updateMarketStatus, 1000);
