@@ -1,26 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Is Tadawul Open?</title>
-  <meta name="description" content="Check if the Tadawul Saudi Stock Exchange (Equities, ETFs, Sukuk, Bonds, Derivatives) is open now.">
-  <meta name="keywords" content="Tadawul, Saudi Stock Exchange, Market Status, Is Tadawul Open, سوق الأسهم السعودي، حالة السوق">
-  <meta name="author" content="Your Name">
-  <link rel="canonical" href="https://www.istadawulopen.com">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main>
-    <h1>Is Tadawul Open Now?</h1>
-    <p id="market-status"></p>
-    <p id="countdown"></p>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 2rem;
+  background: #f9f9f9;
+  color: #333;
+}
 
-    <h1 dir="rtl">هل تداول مفتوح الآن؟</h1>
-    <p id="market-status-ar" dir="rtl"></p>
-    <p id="countdown-ar" dir="rtl"></p>
-  </main>
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+p {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+#market-status,
+#market-status-ar {
+  font-weight: bold;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
