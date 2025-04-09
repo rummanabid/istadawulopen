@@ -8,19 +8,123 @@
   <meta name="keywords" content="Tadawul, Saudi Stock Exchange, Market Status, Is Tadawul Open, سوق الأسهم السعودي، حالة السوق">
   <meta name="author" content="Your Name">
   <link rel="canonical" href="https://www.istadawulopen.com">
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f8f8f8;
+      color: #111;
+      text-align: center;
+      padding: 50px 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 5px 0 20px;
+    }
+
+    #market-status, #market-status-ar {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    #countdown, #countdown-ar {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      #market-status, #market-status-ar {
+        font-size: 1.5rem;
+      }
+      #countdown, #countdown-ar {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>Is Tadawul Open Now?</h1>
-    <p id="market-status"></p>
-    <p id="countdown"></p>
+  <h1>Is Tadawul Open Now?</h1>
+  <p id="market-status"></p>
+  <p id="countdown"></p>
 
-    <h1 dir="rtl">هل تداول مفتوح الآن؟</h1>
-    <p id="market-status-ar" dir="rtl"></p>
-    <p id="countdown-ar" dir="rtl"></p>
-  </main>
+  <h1 dir="rtl">هل تداول مفتوح الآن؟</h1>
+  <p id="market-status-ar" dir="rtl"></p>
+  <p id="countdown-ar" dir="rtl"></p>
 
-  <script src="script.js"></script>
+  <script>
+    function getCurrentAST() {
+      const now = new Date();
+      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      return new Date(utc + 3 * 3600000);
+    }
+
+    const openHour = 10;
+    const openMinute = 0;
+    const closeHour = 15;
+    const closeMinute = 0;
+
+    function updateMarketStatus() {
+      const now = getCurrentAST();
+      const statusElement = document.getElementById("market-status");
+      const countdownElement = document.getElementById("countdown");
+      const statusElementAr = document.getElementById("market-status-ar");
+      const countdownElementAr = document.getElementById("countdown-ar");
+
+      let targetTime;
+      let statusText, statusTextAr;
+      let timerLabel, timerLabelAr;
+
+      const openTime = new Date(now);
+      openTime.setHours(openHour, openMinute, 0, 0);
+
+      const closeTime = new Date(now);
+      closeTime.setHours(closeHour, closeMinute, 0, 0);
+
+      if (now >= openTime && now < closeTime) {
+        statusText = "Market Open";
+        statusTextAr = "السوق مفتوح";
+        timerLabel = "Market closing in: ";
+        timerLabelAr = "يغلق السوق بعد: ";
+        targetTime = closeTime;
+
+        statusElement.style.color = "green";
+        countdownElement.style.color = "green";
+        statusElementAr.style.color = "green";
+        countdownElementAr.style.color = "green";
+      } else {
+        statusText = "Market Closed";
+        statusTextAr = "السوق مغلق";
+        timerLabel = "Market opening in: ";
+        timerLabelAr = "يفتح السوق بعد: ";
+        targetTime = (now < openTime) ? openTime : new Date(openTime.setDate(openTime.getDate() + 1));
+
+        statusElement.style.color = "red";
+        statusElementAr.style.color = "red";
+        countdownElement.style.color = "black";
+        countdownElementAr.style.color = "black";
+      }
+
+      const distance = Math.max(0, targetTime - now);
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      statusElement.innerText = statusText;
+      countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
+      statusElementAr.innerText = statusTextAr;
+      countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+    }
+
+    updateMarketStatus();
+    setInterval(updateMarketStatus, 1000);
+  </script>
 </body>
 </html>
