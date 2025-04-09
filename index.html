@@ -6,58 +6,84 @@
   <title>Is Tadawul Open?</title>
   <meta name="description" content="Check if the Tadawul Saudi Stock Exchange (Equities, ETFs, Sukuk, Bonds, Derivatives) is open now.">
   <meta name="keywords" content="Tadawul, Saudi Stock Exchange, Market Status, Is Tadawul Open, سوق الأسهم السعودي، حالة السوق">
-  <meta name="author" content="Your Name">
+  <meta name="keywords" content="تحقق مما إذا كانت بورصة تداول السعودية (الأسهم، الصناديق المتداولة في البورصة، الصكوك، السندات، المشتقات) مفتوحة الآن.">
+  <meta name="keywords" content="هل بورصة تداول مفتوحة الآن؟">
   <link rel="canonical" href="https://www.istadawulopen.com">
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      background-color: #f8f8f8;
-      color: #111;
+      background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
       text-align: center;
-      padding: 50px 20px;
+      color: #111;
+    }
+
+    header {
+      background-color: #004d40;
+      color: white;
+      width: 100%;
+      padding: 2rem 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
       margin: 0;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+    .content {
+      padding: 2rem 1rem;
+      max-width: 800px;
     }
 
-    p {
-      font-size: 1.2rem;
-      margin: 5px 0 20px;
-    }
-
-    #market-status, #market-status-ar {
-      font-size: 1.8rem;
+    .status {
+      font-size: 2rem;
       font-weight: bold;
+      margin-bottom: 1rem;
     }
 
-    #countdown, #countdown-ar {
+    .countdown {
       font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .ar {
+      direction: rtl;
     }
 
     @media (max-width: 600px) {
-      h1 {
+      header h1 {
         font-size: 2rem;
       }
-      #market-status, #market-status-ar {
+      .status {
         font-size: 1.5rem;
       }
-      #countdown, #countdown-ar {
+      .countdown {
         font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Is Tadawul Open Now?</h1>
-  <p id="market-status"></p>
-  <p id="countdown"></p>
+  <header>
+    <h1>Is Tadawul Open Now?</h1>
+    <h1>هل بورصة تداول مفتوحة الآن؟
+    </h1>
 
-  <h1 dir="rtl">هل تداول مفتوح الآن؟</h1>
-  <p id="market-status-ar" dir="rtl"></p>
-  <p id="countdown-ar" dir="rtl"></p>
+  </header>
+  <div class="content">
+    <div class="status" id="market-status"></div>
+    <div class="countdown" id="countdown"></div>
+
+    <div class="status ar" id="market-status-ar"></div>
+    <div class="countdown ar" id="countdown-ar"></div>
+  </div>
 
   <script>
     function getCurrentAST() {
