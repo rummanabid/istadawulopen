@@ -3,157 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- SEO Meta Tags (English + Arabic) -->
-  <title>Is Tadawul Open? | هل سوق تداول مفتوح؟</title>
-  <meta name="description" content="Check if the Saudi Tadawul stock market is open or closed right now. Live status and countdown.">
-  <meta name="keywords" content="Tadawul, Saudi stock market, is Tadawul open, Saudi exchange, Tadawul hours, market status">
-  <meta name="language" content="en">
-  <meta name="description" lang="ar" content="تحقق مما إذا كانت سوق تداول السعودية مفتوحة أو مغلقة الآن. حالة السوق والعد التنازلي مباشرة.">
-  <meta name="keywords" lang="ar" content="تداول, السوق السعودي, هل السوق مفتوح, أوقات السوق, حالة سوق تداول">
-  <meta name="language" content="ar">
-  <meta property="og:title" content="Is Tadawul Open? | هل سوق تداول مفتوح؟">
-  <meta property="og:description" content="Live Saudi Tadawul stock market status – check whether the market is currently open or closed. الحالة الحالية لسوق تداول السعودية مباشرة.">
-  <link rel="canonical" href="https://istadawulopen.com" />
-  <link rel="alternate" hreflang="en" href="https://istadawulopen.com/" />
-  <link rel="alternate" hreflang="ar" href="https://istadawulopen.com/" />
-
-  <!-- Favicon (Optional) -->
-  <link rel="icon" href="favicon.ico" />
-
-  <!-- Structured Data for SEO -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Is Tadawul Open?",
-    "url": "https://istadawulopen.com",
-    "inLanguage": ["en", "ar"],
-    "description": "Check if the Saudi Tadawul stock market is open or closed right now. تحقق مما إذا كانت سوق تداول السعودية مفتوحة أو مغلقة الآن."
-  }
-  </script>
-
-  <!-- Styles -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
-      background: #f9f9f9;
-      color: #333;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    #market-status {
-      font-weight: bold;
-    }
-
-    #market-status-ar {
-      font-weight: bold;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
-    }
-  </style>
+  <title>Is Tadawul Open?</title>
+  <meta name="description" content="Check if the Tadawul Saudi Stock Exchange (Equities, ETFs, Sukuk, Bonds, Derivatives) is open now.">
+  <meta name="keywords" content="Tadawul, Saudi Stock Exchange, Market Status, Is Tadawul Open, سوق الأسهم السعودي، حالة السوق">
+  <meta name="author" content="Your Name">
+  <link rel="canonical" href="https://www.istadawulopen.com">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- English Display -->
-  <h1 id="market-status">Loading...</h1>
-  <p id="countdown">...</p>
+  <main>
+    <h1>Is Tadawul Open Now?</h1>
+    <p id="market-status"></p>
+    <p id="countdown"></p>
 
-  <!-- Arabic Display -->
-  <h1 id="market-status-ar" dir="rtl" style="font-family: sans-serif;">جاري التحميل...</h1>
-  <p id="countdown-ar" dir="rtl" style="font-family: sans-serif;">...</p>
+    <h1 dir="rtl">هل تداول مفتوح الآن؟</h1>
+    <p id="market-status-ar" dir="rtl"></p>
+    <p id="countdown-ar" dir="rtl"></p>
+  </main>
 
-  <!-- Script -->
-  <script>
-    function getCurrentAST() {
-      const now = new Date();
-      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-      return new Date(utc + 3 * 3600000); // UTC+3 for AST
-    }
-
-    const openHour = 10;
-    const openMinute = 0;
-    const closeHour = 15;
-    const closeMinute = 0;
-
-    function updateMarketStatus() {
-      const now = getCurrentAST();
-      const statusElement = document.getElementById("market-status");
-      const countdownElement = document.getElementById("countdown");
-      const statusElementAr = document.getElementById("market-status-ar");
-      const countdownElementAr = document.getElementById("countdown-ar");
-
-      let targetTime;
-      let statusText, statusTextAr;
-      let timerLabel, timerLabelAr;
-
-      const openTime = new Date(now);
-      openTime.setHours(openHour, openMinute, 0, 0);
-
-      const closeTime = new Date(now);
-      closeTime.setHours(closeHour, closeMinute, 0, 0);
-
-      if (now >= openTime && now < closeTime) {
-        statusText = "Market Open";
-        statusTextAr = "السوق مفتوح";
-        timerLabel = "Market closing in: ";
-        timerLabelAr = "يغلق السوق بعد: ";
-        targetTime = closeTime;
-
-        statusElement.style.color = "green";
-        countdownElement.style.color = "green";
-        statusElementAr.style.color = "green";
-        countdownElementAr.style.color = "green";
-      } else {
-        statusText = "Market Closed";
-        statusTextAr = "السوق مغلق";
-        timerLabel = "Market opening in: ";
-        timerLabelAr = "يفتح السوق بعد: ";
-        statusElement.style.color = "red";
-        statusElementAr.style.color = "red";
-        countdownElement.style.color = "black";
-        countdownElementAr.style.color = "black";
-
-        if (now < openTime) {
-          targetTime = openTime;
-        } else {
-          targetTime = new Date(openTime);
-          targetTime.setDate(openTime.getDate() + 1);
-        }
-      }
-
-      const distance = Math.max(0, targetTime - now);
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / (1000 * 60)) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
-
-      statusElement.innerText = statusText;
-      countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
-
-      statusElementAr.innerText = statusTextAr;
-      countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
-    }
-
-    updateMarketStatus();
-    setInterval(updateMarketStatus, 1000);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
