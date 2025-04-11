@@ -93,72 +93,101 @@
     <div class="countdown ar" id="countdown-ar"></div>
   </div>
 
-  <script>
-    function getCurrentAST() {
-      const now = new Date();
-      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-      return new Date(utc + 3 * 3600000);
+<script>
+  function getCurrentAST() {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + 3 * 3600000); // AST is UTC+3
+  }
+
+  const openHour = 10;
+  const openMinute = 0;
+  const closeHour = 15;
+  const closeMinute = 0;
+
+  // Add known Tadawul holidays here in 'YYYY-MM-DD' format
+  const holidays = [
+    "2025-04-10", // Example: Eid al-Fitr (customize as needed)
+    "2025-06-15", // Example: Eid al-Adha
+    "2025-09-23"  // Example: Saudi National Day
+  ];
+
+  function isHoliday(date) {
+    const dateStr = date.toISOString().split("T")[0];
+    return holidays.includes(dateStr);
+  }
+
+  function isWeekend(date) {
+    const day = date.getDay(); // 0 = Sunday, ..., 6 = Saturday
+    return day === 5 || day === 6; // Friday or Saturday
+  }
+
+  function updateMarketStatus() {
+    const now = getCurrentAST();
+    const statusElement = document.getElementById("market-status");
+    const countdownElement = document.getElementById("countdown");
+    const statusElementAr = document.getElementById("market-status-ar");
+    const countdownElementAr = document.getElementById("countdown-ar");
+
+    const openTime = new Date(now);
+    openTime.setHours(openHour, openMinute, 0, 0);
+
+    const closeTime = new Date(now);
+    closeTime.setHours(closeHour, closeMinute, 0, 0);
+
+    const closedToday = isWeekend(now) || isHoliday(now);
+
+    let statusText, statusTextAr;
+    let timerLabel, timerLabelAr;
+    let targetTime;
+
+    if (!closedToday && now >= openTime && now < closeTime) {
+      // Market is open
+      statusText = "Market Open";
+      statusTextAr = "السوق مفتوح";
+      timerLabel = "Market closing in: ";
+      timerLabelAr = "يغلق السوق بعد: ";
+      targetTime = closeTime;
+
+      statusElement.style.color = "green";
+      countdownElement.style.color = "green";
+      statusElementAr.style.color = "green";
+      countdownElementAr.style.color = "green";
+    } else {
+      // Market is closed
+      statusText = closedToday ? "Market Closed (Weekend or Holiday)" : "Market Closed";
+      statusTextAr = closedToday ? "السوق مغلق (عطلة أو نهاية الأسبوع)" : "السوق مغلق";
+      timerLabel = "Market opening in: ";
+      timerLabelAr = "يفتح السوق بعد: ";
+
+      // Find next open day
+      let nextOpen = new Date(now);
+      do {
+        nextOpen.setDate(nextOpen.getDate() + 1);
+      } while (isWeekend(nextOpen) || isHoliday(nextOpen));
+      nextOpen.setHours(openHour, openMinute, 0, 0);
+
+      targetTime = nextOpen;
+
+      statusElement.style.color = "red";
+      statusElementAr.style.color = "red";
+      countdownElement.style.color = "black";
+      countdownElementAr.style.color = "black";
     }
 
-    const openHour = 10;
-    const openMinute = 0;
-    const closeHour = 15;
-    const closeMinute = 0;
+    const distance = Math.max(0, targetTime - now);
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
 
-    function updateMarketStatus() {
-      const now = getCurrentAST();
-      const statusElement = document.getElementById("market-status");
-      const countdownElement = document.getElementById("countdown");
-      const statusElementAr = document.getElementById("market-status-ar");
-      const countdownElementAr = document.getElementById("countdown-ar");
+    statusElement.innerText = statusText;
+    countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
+    statusElementAr.innerText = statusTextAr;
+    countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+  }
 
-      let targetTime;
-      let statusText, statusTextAr;
-      let timerLabel, timerLabelAr;
-
-      const openTime = new Date(now);
-      openTime.setHours(openHour, openMinute, 0, 0);
-
-      const closeTime = new Date(now);
-      closeTime.setHours(closeHour, closeMinute, 0, 0);
-
-      if (now >= openTime && now < closeTime) {
-        statusText = "Market Open";
-        statusTextAr = "السوق مفتوح";
-        timerLabel = "Market closing in: ";
-        timerLabelAr = "يغلق السوق بعد: ";
-        targetTime = closeTime;
-
-        statusElement.style.color = "green";
-        countdownElement.style.color = "green";
-        statusElementAr.style.color = "green";
-        countdownElementAr.style.color = "green";
-      } else {
-        statusText = "Market Closed";
-        statusTextAr = "السوق مغلق";
-        timerLabel = "Market opening in: ";
-        timerLabelAr = "يفتح السوق بعد: ";
-        targetTime = (now < openTime) ? openTime : new Date(openTime.setDate(openTime.getDate() + 1));
-
-        statusElement.style.color = "red";
-        statusElementAr.style.color = "red";
-        countdownElement.style.color = "black";
-        countdownElementAr.style.color = "black";
-      }
-
-      const distance = Math.max(0, targetTime - now);
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / (1000 * 60)) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
-
-      statusElement.innerText = statusText;
-      countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
-      statusElementAr.innerText = statusTextAr;
-      countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
-    }
-
-    updateMarketStatus();
-    setInterval(updateMarketStatus, 1000);
-  </script>
+  updateMarketStatus();
+  setInterval(updateMarketStatus, 1000);
+</script>
 </body>
 </html>
