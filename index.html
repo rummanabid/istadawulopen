@@ -94,7 +94,6 @@
   </div>
 
 <script>
-  console.log("✅ Market status script loaded — v2 | " + new Date().toString());
   function getCurrentAST() {
     const now = new Date();
     const utc = now.getTime() + now.getTimezoneOffset() * 60000;
@@ -106,9 +105,8 @@
   const closeHour = 15;
   const closeMinute = 0;
 
-  // Add known Tadawul holidays here in 'YYYY-MM-DD' format
   const holidays = [
-    "2025-04-10", // Example: Eid al-Fitr (customize as needed)
+    "2025-04-10", // Example: Eid al-Fitr
     "2025-06-15", // Example: Eid al-Adha
     "2025-09-23"  // Example: Saudi National Day
   ];
@@ -119,12 +117,14 @@
   }
 
   function isWeekend(date) {
-    const day = date.getDay(); // 0 = Sunday, ..., 6 = Saturday
+    const day = date.getDay();
     return day === 5 || day === 6; // Friday or Saturday
   }
 
   function updateMarketStatus() {
     const now = getCurrentAST();
+    console.log("Current AST Date:", now);
+
     const statusElement = document.getElementById("market-status");
     const countdownElement = document.getElementById("countdown");
     const statusElementAr = document.getElementById("market-status-ar");
@@ -137,13 +137,14 @@
     closeTime.setHours(closeHour, closeMinute, 0, 0);
 
     const closedToday = isWeekend(now) || isHoliday(now);
+    console.log("Is Weekend:", isWeekend(now));
+    console.log("Is Holiday:", isHoliday(now));
 
     let statusText, statusTextAr;
     let timerLabel, timerLabelAr;
     let targetTime;
 
     if (!closedToday && now >= openTime && now < closeTime) {
-      // Market is open
       statusText = "Market Open";
       statusTextAr = "السوق مفتوح";
       timerLabel = "Market closing in: ";
@@ -155,13 +156,11 @@
       statusElementAr.style.color = "green";
       countdownElementAr.style.color = "green";
     } else {
-      // Market is closed
       statusText = closedToday ? "Market Closed (Weekend or Holiday)" : "Market Closed";
       statusTextAr = closedToday ? "السوق مغلق (عطلة أو نهاية الأسبوع)" : "السوق مغلق";
       timerLabel = "Market opening in: ";
       timerLabelAr = "يفتح السوق بعد: ";
 
-      // Find next open day
       let nextOpen = new Date(now);
       do {
         nextOpen.setDate(nextOpen.getDate() + 1);
@@ -182,9 +181,9 @@
     const seconds = Math.floor((distance / 1000) % 60);
 
     statusElement.innerText = statusText;
-    countdownElement.innerText = timerLabel + `${hours}h ${minutes}m ${seconds}s`;
+    countdownElement.innerText = timerLabel + hours + "h " + minutes + "m " + seconds + "s";
     statusElementAr.innerText = statusTextAr;
-    countdownElementAr.innerText = timerLabelAr + `${hours} ساعة ${minutes} دقيقة ${seconds} ثانية`;
+    countdownElementAr.innerText = timerLabelAr + hours + " ساعة " + minutes + " دقيقة " + seconds + " ثانية";
   }
 
   updateMarketStatus();
